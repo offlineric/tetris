@@ -80,18 +80,22 @@ function turnThePiece () {
 }
 
 function checkThePiece(checkX, checkY, checkingPiece) {
+try {
   for (var row = 0; row < checkingPiece.length; row++) {
     for (var col = 0; col < checkingPiece[row].length; col++) {
       if (checkingPiece[row][col] != 0) {
-        if (board[row + checkY][col + checkX] != 0) {
+        if (board[row + checkY][col + checkX] != 0) {        
           return 0;
-        }  
+        }
+        if (row + checkY >= 16) {return 0;}  
       }
     }
   }
   return 1;
 }
+catch (err) {nowPlaying = 0;}
 
+}
 function moveThePiece(testX) {
   var checkX = pieceX + testX;
   var checkY = pieceY;
@@ -122,15 +126,8 @@ function makeNewPiece() {
 function dropThePiece() {
   var checkX = pieceX;
   var checkY = pieceY + 1;
-  for (var row = 0; row < pieceShape.length; row++) {
-    for (var col = 0; col < pieceShape[row].length; col++) {
-      if (pieceShape[row][col] != 0) {
-        if (board[row + checkY][col + checkX] != 0) {
-         newPiece = 1; putThePieceDown(); dropSlow = 0; return 0;
-        }  if (row + checkY >= 16) {newPiece = 1; dropSlow = 0; putThePieceDown(); return 0;}
-      }
-    }
-  }
+  if (checkThePiece(checkX, checkY, pieceShape) == 0)
+   {newPiece = 1; dropSlow = 0; putThePieceDown(); return 0;}
 }
 
 function renderGame() {
@@ -178,6 +175,7 @@ function renderGame() {
 }
 
 function putThePieceDown () {
+try {
   for (var row = 0; row < pieceShape.length; row++) {
     for (var col = 0; col < pieceShape[row].length; col++) {
       if (pieceShape[row][col] != 0) {
@@ -186,6 +184,8 @@ function putThePieceDown () {
     }
   }
   checkFullRows();
+}
+catch (err) {nowPlaying = 0;}
 }
 
 function checkFullRows() {
@@ -204,11 +204,11 @@ for (var row = 0; row < board.length; row++) {
     board.unshift([0,0,0,0,0,0,0,0,0,0]);   
     }
 }
-if (rowsCleared !=0) { console.log(rowsCleared); doScores(rowsCleared); }
+if (rowsCleared !=0) { doScores(rowsCleared); }
 }
 
 function doScores(clear) {
-console.log(clear);
+
   var points = 0;
   if (clear == 1) {points = 40;}
   if (clear == 2) {points = 100;}
@@ -234,6 +234,7 @@ function newGame() {
     ctx = c.getContext("2d");
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, 400, 640); //clear the canvas
+    document.body.className = "playing";
 }
 
 function mainLoop() {
@@ -244,7 +245,7 @@ function mainLoop() {
   if (nowPlaying == 1) {
   pieceY += 1;
     setTimeout( mainLoop, ((800-(50*theLevel)) * dropSlow));
-  }
+  } else {document.body.className = "gg";}
 }
 
 d.addEventListener("DOMContentLoaded", function () { // Initial setup on page load
