@@ -55,6 +55,8 @@ function checkKey(e) {
   }
 }
 
+function dropIt () { dropSlow = 0 } //for the mobile button ok
+
 function turnThePiece () {
 var ccc = (pieceShape[0].length);
 var rrr = (pieceShape.length);
@@ -107,12 +109,12 @@ function moveThePiece(testX) {
 
 function makeNewPiece() {
   var rand = 1 * (Math.floor(Math.random() * 7) + 1); //pick a random piece
-  if (rand == 1) {pieceShape = matrix(2,2,1) };                                              //square block
-  if (rand == 2) {pieceShape = matrix(4,1,2) };                                              //tall line
-  if (rand == 3) {pieceShape = matrix(3,2,3); pieceShape[0][1] = 0; pieceShape[1][1] = 0; }; //L block
-  if (rand == 4) {pieceShape = matrix(3,2,4); pieceShape[0][0] = 0; pieceShape[1][0] = 0; }; //backwards L block 
-  if (rand == 5) {pieceShape = matrix(2,3,5); pieceShape[0][0] = 0; pieceShape[1][2] = 0; }; //z block
-  if (rand == 6) {pieceShape = matrix(2,3,6); pieceShape[0][2] = 0; pieceShape[1][0] = 0; }; //s block
+  if (rand == 1) {pieceShape = matrix(2,2,1) };                                              //o block
+  if (rand == 2) {pieceShape = matrix(4,4,0); pieceShape[0][1] = 2; pieceShape[1][1] = 2; pieceShape[2][1] = 2; pieceShape[3][1] = 2; };//tall block
+  if (rand == 3) {pieceShape = matrix(3,2,3); pieceShape[0][1] = 0; pieceShape[1][1] = 0; }; //L block1
+  if (rand == 4) {pieceShape = matrix(3,2,4); pieceShape[0][0] = 0; pieceShape[1][0] = 0; }; //J block 
+  if (rand == 5) {pieceShape = matrix(2,3,5); pieceShape[0][0] = 0; pieceShape[1][2] = 0; }; //Z block
+  if (rand == 6) {pieceShape = matrix(2,3,6); pieceShape[0][2] = 0; pieceShape[1][0] = 0; }; //S block
   if (rand == 7) {pieceShape = matrix(2,3,7); pieceShape[1][0] = 0; pieceShape[1][2] = 0; }; //T block
   newPiece = 0;
   dropSlow = 1;
