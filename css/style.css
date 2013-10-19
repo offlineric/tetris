@@ -11,6 +11,17 @@ body, html {
     padding:0;
 }
 
+#score, #level {font-weight: bold; font-size: 12pt;
+     position: fixed;
+     top: 50%;
+     left: 50%;
+     margin-top: -320px;
+     margin-left: -200px;
+
+
+}
+#score {margin-top: -300px;}
+
 #myCanvas {
      border: black 0px solid !important;
      position: fixed;

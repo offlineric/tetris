@@ -31,7 +31,7 @@ function matrix( rows, cols, defaultValue){               //usage: varName = mat
 return arr;
 }
 
-function drawBlox(x, y, color) {
+function drawBlox(x, y, color) {                        //draws some blox
    var c = document.getElementById("myCanvas");
    var ctx = c.getContext("2d");
   ctx.fillStyle = color;
@@ -58,14 +58,10 @@ function checkKey(e) {
 function dropIt () { dropSlow = 0 } //for the mobile button ok
 
 function turnThePiece () {
-var ccc = (pieceShape[0].length);
-var rrr = (pieceShape.length);
-
-
+  var ccc = (pieceShape[0].length); // kept getting this mixed up
+  var rrr = (pieceShape.length);
   var checkPiece = matrix(ccc, rrr, 0);
-
-
-    newRow = 0;
+    var newRow = 0;
     for (var oldColumn = ccc - 1; oldColumn >= 0; oldColumn--)
     {
         var newColumn = 0;
@@ -143,8 +139,6 @@ function renderGame() {
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, 400, 640); //clear the canvas
 
-
-
   for (var row = 0; row < board.length; row++) {
     for (var col = 0; col < board[row].length; col++) {
       if (board[row][col] != 0) {
@@ -195,6 +189,7 @@ function putThePieceDown () {
 }
 
 function checkFullRows() {
+var rowsCleared = 0;
 for (var row = 0; row < board.length; row++) {
     isFilled = true;
     for (var col = 0; col < board[row].length; col++) {
@@ -204,12 +199,27 @@ for (var row = 0; row < board.length; row++) {
     }
     
     if (isFilled == true) {
-    //remove the filled line sub-array from the array
+    rowsCleared += 1;
     board.splice(row, 1);  
-    //add a new empty line sub-array to the start of the array
     board.unshift([0,0,0,0,0,0,0,0,0,0]);   
     }
 }
+if (rowsCleared !=0) { console.log(rowsCleared); doScores(rowsCleared); }
+}
+
+function doScores(clear) {
+console.log(clear);
+  var points = 0;
+  if (clear == 1) {points = 40;}
+  if (clear == 2) {points = 100;}
+  if (clear == 3) {points = 300;}
+  if (clear == 4) {points = 1200;}
+  nextLevel += clear;
+  theLevel = Math.floor(nextLevel/10);
+  score += (points * (theLevel +1));
+  document.getElementById('level').innerHTML = "level: " + theLevel;
+  document.getElementById('score').innerHTML = "score: " + score;
+
 }
 
 function newGame() {
@@ -218,6 +228,7 @@ function newGame() {
   nowPlaying = 1;
   newPiece = 1;
   theLevel = 0;
+  nextLevel = 0;
   mainLoop ();
     c = document.getElementById("myCanvas");
     ctx = c.getContext("2d");
@@ -232,7 +243,7 @@ function mainLoop() {
   requestAnimFrame(renderGame);
   if (nowPlaying == 1) {
   pieceY += 1;
-    setTimeout( mainLoop, (800 * dropSlow));
+    setTimeout( mainLoop, ((800-(50*theLevel)) * dropSlow));
   }
 }
 
