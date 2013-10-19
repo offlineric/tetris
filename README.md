@@ -1,4 +1,4 @@
 tetris
-======
+=====
 
-a day late on my weekly thursday project
+bored on a friday night
