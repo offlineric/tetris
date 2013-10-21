@@ -2,8 +2,8 @@ d = document;
 
 window.requestAnimFrame = (function(){                    //usage: requestAnimFrame(function); 
   return  window.requestAnimationFrame       ||           //will make a browser appropriate request to run function 
-          window.webkitRequestAnimationFrame ||           //at the next available animated frame. good for battery
-          window.mozRequestAnimationFrame    ||           //saving by stopping rendering when tab loses view
+          window.webkitRequestAnimationFrame ||           //at the next available animated frame. good for performance
+          window.mozRequestAnimationFrame    ||           //and battery saving by stopping rendering when tab loses focus
           function( callback ){
             window.setTimeout(callback, 1000 / 60);
           };
@@ -32,8 +32,6 @@ return arr;
 }
 
 function drawBlox(x, y, color) {                        //draws some blox
-   var c = document.getElementById("myCanvas");
-   var ctx = c.getContext("2d");
   ctx.fillStyle = color;
   ctx.fillRect(40 * x, 40 * y, 40, 40);
 }
@@ -131,21 +129,20 @@ function makeNewPiece() {              //creates a new piece at game start or on
   dropSlow = 1;
   pieceX = 4;
   pieceY = -1;
-  piceRot = 0;
 }
 
 function putThePieceDown () {                                     //attaches the moving piece to the board when it can no longer move down
-try {
-  for (var row = 0; row < pieceShape.length; row++) {
-    for (var col = 0; col < pieceShape[row].length; col++) {
-      if (pieceShape[row][col] != 0) {
-        board[row + pieceY][col + pieceX] = pieceShape[row][col];
+  try {
+    for (var row = 0; row < pieceShape.length; row++) {
+      for (var col = 0; col < pieceShape[row].length; col++) {
+        if (pieceShape[row][col] != 0) {
+          board[row + pieceY][col + pieceX] = pieceShape[row][col];
+        }
       }
     }
+    checkFullRows();
   }
-  checkFullRows();
-}
-catch (err) {nowPlaying = 0;}
+  catch (err) {nowPlaying = 0;}                                   //cleverly use an error to detect when the game is over ;)
 }
 
 function checkFullRows() {                                        //checks for completed rows. called when a piece is attached to the board
@@ -168,7 +165,6 @@ if (rowsCleared !=0) { doScores(rowsCleared); }
 }
 
 function doScores(clear) {                                       //calculates score from cleared rows. called when rows are cleared
-
   var points = 0;
   if (clear == 1) {points = 40;}
   if (clear == 2) {points = 100;}
@@ -179,12 +175,9 @@ function doScores(clear) {                                       //calculates sc
   score += (points * (theLevel +1));
   document.getElementById('level').innerHTML = "level: " + theLevel;
   document.getElementById('score').innerHTML = "score: " + score;
-
 }
 
 function renderGame() {                 // rendering function! loops through board and piece states and draws them to canvas
-    c = document.getElementById("myCanvas");
-    ctx = c.getContext("2d");
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, 400, 640); //clear the canvas
 
@@ -208,7 +201,6 @@ function renderGame() {                 // rendering function! loops through boa
       }
     }
   }
-
 }
 
 function newGame() {                          //initializes a clean game state. called on page load and when new game is pressed
@@ -220,9 +212,8 @@ function newGame() {                          //initializes a clean game state. 
   nextLevel = 0;
   document.getElementById('level').innerHTML = "level: " + theLevel;
   document.getElementById('score').innerHTML = "score: " + score;
-  mainLoop ();
-    c = document.getElementById("myCanvas");
-    ctx = c.getContext("2d");
+    mainLoop ();
+    renderGame();
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, 400, 640); //clear the canvas
     document.body.className = "playing";
@@ -231,15 +222,18 @@ function newGame() {                          //initializes a clean game state. 
 function mainLoop() {
   pressPerLoop = 0;
   if (newPiece == 1) {makeNewPiece()};
+  
   dropThePiece();
   requestAnimFrame(renderGame);
   if (nowPlaying == 1) {
-  pieceY += 1;
+    pieceY += 1;
     setTimeout( mainLoop, ((800-(50*theLevel)) * dropSlow));
   } else {document.body.className = "gg";}
 }
 
 d.addEventListener("DOMContentLoaded", function () {                    // once page is loaded, call newgame!
   d.removeEventListener("DOMContentLoaded", arguments.callee, false);
+  c = d.getElementById("myCanvas");
+  ctx = c.getContext("2d");
 newGame();  
 });
